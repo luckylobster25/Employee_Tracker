@@ -23,12 +23,11 @@ const init = () => {
                 choices: [
                     "View department",
                     "Add department",
-                    "View all employees",
-                    "View total utilized budget of a department",
-                    "Update employee manager",
                     "Delete department",
+                    "View all employees",
+                    "Add role",
+                    "View all role",
                     "Delete role",
-                    "Delete employee",
                     "EXIT"
                 ]
             })
@@ -40,28 +39,25 @@ const init = () => {
                 case 'Add department':
                     addDepartment();
                     break;
-                case 'View all employees':
-                    viewAllEmployees();
-                    break;
-                case 'View total utilized budget of a department':
-                    addEmployees();
-                    break;
-                case 'Update employee manager':
-                    updateRole();
-                    break;
                 case 'Delete department':
                     removeDepartment();
                     break;
-                case 'Delete role':
-                    addRoles();
+                case 'View all employees':
+                    viewAllEmployees();
                     break;
-                case 'Delete employee':
-                    viewDepartments();
+                case 'Add role':
+                    addRole();
+                    break;
+                case 'View all role':
+                    viewAllRole();
+                    break;
+                case 'Delete role':
+                    removeRole();
                     break;
                 case 'Exit':
                     myDataBase.end();
-                    console.log('GOODBYE!')
                     break;
+
             }
 
         })
@@ -114,6 +110,91 @@ const removeDepartment = () => {
                 if (err) throw err;
                 console.log(`Deleted department with the ID ${answer.department_id} from the database!`)
                 viewDepartments();
+            })
+        }
+        )
+};
+const addRole = () => {
+    myDataBase.query(`SELECT * FROM department`, (err, result) => {
+        if (err) throw err;
+        result = result.map((department) => {
+            return {
+                name: department.name,
+                value: department.id,
+            };
+        });
+
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    name: 'role',
+                    message: 'What is the role?',
+                },
+                {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'What is the salary?',
+                    validate: function (input) {
+                        validation = isNaN(input);
+                        if (validation) {
+                            console.log(`
+                        -----ERROR-----
+                        Please enter a valid number.`)
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                },
+
+                {
+                    type: 'list',
+                    name: 'departmentRole',
+                    message: 'Which department does the role belong to?',
+                    choices: result
+                }
+            ])
+            .then((answer) => {  //cannot get (? ? ?) to work...
+                myDataBase.query(`INSERT INTO role SET ?`,
+                    {
+                        title: answer.role,
+                        salary: answer.salary,
+                        department_id: answer.departmentRole,
+                    },
+                    (err, result) => {
+                        if (err) throw err;
+                    }
+                );
+                console.log(`Added ${answer.role} to the database!`)
+                // viewRoles();
+            })
+
+
+    });
+};
+const viewAllRole = () => {
+    myDataBase.query(`SELECT role.id, role.title, department.name AS department FROM role JOIN department ON role.department_id = department.id;`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(result);
+        init();
+    });
+};
+const removeRole = () => {
+    inquirer
+        .prompt(
+            {
+                type: 'input',
+                name: 'role_id',
+                message: 'ID of the role you wish to delete'
+            })
+        .then((answer) => {
+            myDataBase.query(`DELETE FROM role WHERE id = ${answer.role_id};`, (err, result) => {
+                if (err) throw err;
+                console.log(`Deleted role with the ID ${answer.role_id} from the database!`)
+                viewAllRole();
             })
         }
         )
