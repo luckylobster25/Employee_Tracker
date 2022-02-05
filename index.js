@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const cTable = require('console.table');
-const { restoreDefaultPrompts } = require('inquirer');
+// const cTable = require('console.table');
+const figlet = require('figlet')
 
 const myDataBase = mysql.createConnection(
     {
@@ -12,7 +12,7 @@ const myDataBase = mysql.createConnection(
     },
     console.log(`Successfully connected to the casino_db database.`)
 );
-
+// initial function
 const init = () => {
     inquirer
         .prompt(
@@ -21,13 +21,13 @@ const init = () => {
                 message: "Please select one",
                 name: "initial",
                 choices: [
-                    "View department",
                     "Add department",
                     "Delete department",
-                    "View all employees",
+                    "View department",
                     "Add role",
-                    "View all role",
                     "Delete role",
+                    "View all role",
+                    "View all employees",
                     "EXIT"
                 ]
             })
@@ -54,7 +54,14 @@ const init = () => {
                 case 'Delete role':
                     removeRole();
                     break;
-                case 'Exit':
+                case 'EXIT':
+                    console.log('Exiting Casino Tracker System.');
+                    figlet('Farewell', (err, result) => {
+                        if (err) {
+                            console.log(err)
+                        }
+                        console.log(result);
+                    })
                     myDataBase.end();
                     break;
 
@@ -62,6 +69,7 @@ const init = () => {
 
         })
 }
+// start of all function
 const viewDepartments = () => {
     myDataBase.query(`SELECT department.id AS id, department.name AS department FROM department`, (err, result) => {
         if (err) {
@@ -94,8 +102,7 @@ const addDepartment = () => {
                 console.log(`Added ${answer.newdepartment} to the database!`)
                 viewDepartments();
             })
-        }
-        )
+        })
 };
 const removeDepartment = () => {
     inquirer
@@ -111,8 +118,7 @@ const removeDepartment = () => {
                 console.log(`Deleted department with the ID ${answer.department_id} from the database!`)
                 viewDepartments();
             })
-        }
-        )
+        })
 };
 const addRole = () => {
     myDataBase.query(`SELECT * FROM department`, (err, result) => {
@@ -123,7 +129,6 @@ const addRole = () => {
                 value: department.id,
             };
         });
-
         inquirer
             .prompt([
                 {
@@ -147,7 +152,6 @@ const addRole = () => {
                         }
                     }
                 },
-
                 {
                     type: 'list',
                     name: 'departmentRole',
@@ -155,26 +159,24 @@ const addRole = () => {
                     choices: result
                 }
             ])
-            .then((answer) => {  //cannot get (? ? ?) to work...
+            .then((answer) => {
                 myDataBase.query(`INSERT INTO role SET ?`,
                     {
                         title: answer.role,
                         salary: answer.salary,
                         department_id: answer.departmentRole,
                     },
-                    (err, result) => {
+                    (err) => {
                         if (err) throw err;
                     }
                 );
                 console.log(`Added ${answer.role} to the database!`)
-                // viewRoles();
+                viewAllRole();
             })
-
-
     });
 };
 const viewAllRole = () => {
-    myDataBase.query(`SELECT role.id, role.title, department.name AS department FROM role JOIN department ON role.department_id = department.id;`, (err, result) => {
+    myDataBase.query(`SELECT role.id, role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;`, (err, result) => {
         if (err) {
             console.log(err);
         }
@@ -196,8 +198,9 @@ const removeRole = () => {
                 console.log(`Deleted role with the ID ${answer.role_id} from the database!`)
                 viewAllRole();
             })
-        }
-        )
+        })
 };
+// end of function data
 
+// initial call function
 init();
