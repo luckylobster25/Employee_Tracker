@@ -1,16 +1,16 @@
-DROP DATABASE IF EXISTS company_db;
-CREATE DATABASE company_db;
+DROP DATABASE IF EXISTS casino_db;
+CREATE DATABASE casino_db;
 
-USE company_db;
+USE casino_db;
 
 CREATE TABLE department (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(20)
+    name VARCHAR(30)
 );
 
 CREATE TABLE role (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(20),
+    title VARCHAR(30),
     salary DECIMAL,
     department_id INT,
     FOREIGN KEY (department_id)
@@ -20,8 +20,8 @@ CREATE TABLE role (
 
 CREATE TABLE employee (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  first_name VARCHAR(20),
-  last_name VARCHAR(20),
+  first_name VARCHAR(30),
+  last_name VARCHAR(30),
   role_id INT,
   manager_id INT,
   FOREIGN KEY (role_id)
