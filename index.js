@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const cTable = require ('console.table');
+const cTable = require('console.table');
 const { restoreDefaultPrompts } = require('inquirer');
 
 const myDataBase = mysql.createConnection(
@@ -21,7 +21,8 @@ const init = () => {
                 message: "Please select one",
                 name: "initial",
                 choices: [
-                    "View employees by manager",
+                    "View department",
+                    "Add department",
                     "View all employees",
                     "View total utilized budget of a department",
                     "Update employee manager",
@@ -33,8 +34,11 @@ const init = () => {
             })
         .then((answer) => {
             switch (answer.initial) {
-                case 'View employees by manager':
-                    viewEmployees();
+                case 'View department':
+                    viewDepartments();
+                    break;
+                case 'Add department':
+                    addDepartment();
                     break;
                 case 'View all employees':
                     viewAllEmployees();
@@ -46,7 +50,7 @@ const init = () => {
                     updateRole();
                     break;
                 case 'Delete department':
-                    viewRoles();
+                    removeDepartment();
                     break;
                 case 'Delete role':
                     addRoles();
@@ -62,15 +66,57 @@ const init = () => {
 
         })
 }
-
-const viewAllEmployees = () => {
-    myDataBase.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`, (err, result) => {
-      if (err) {
-        console.log(err);
-      }  
+const viewDepartments = () => {
+    myDataBase.query(`SELECT department.id AS id, department.name AS department FROM department`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
         console.table(result);
         init();
     });
+};
+const viewAllEmployees = () => {
+    myDataBase.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(result);
+        init();
+    });
+};
+const addDepartment = () => {
+    inquirer
+        .prompt(
+            {
+                type: 'input',
+                name: 'newdepartment',
+                message: 'Name of department'
+            })
+        .then((answer) => {
+            myDataBase.query(`INSERT INTO department(name) VALUES (?);`, answer.newdepartment, (err, result) => {
+                if (err) throw err;
+                console.log(`Added ${answer.newdepartment} to the database!`)
+                viewDepartments();
+            })
+        }
+        )
+};
+const removeDepartment = () => {
+    inquirer
+        .prompt(
+            {
+                type: 'input',
+                name: 'department_id',
+                message: 'Department ID'
+            })
+        .then((answer) => {
+            myDataBase.query(`DELETE FROM department WHERE id = ${answer.department_id};`, (err, result) => {
+                if (err) throw err;
+                console.log(`Deleted department with the ID ${answer.department_id} from the database!`)
+                viewDepartments();
+            })
+        }
+        )
 };
 
 init();
