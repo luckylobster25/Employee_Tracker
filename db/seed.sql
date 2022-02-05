@@ -24,55 +24,43 @@ VALUES
 ("Surveillance specialist", 51000, 5),
 ("Surveillance manager", 60000, 5);
 
+SET FOREIGN_KEY_CHECKS=0;
+
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
--- slot department start
-("Tam", "Nguyen", 1, 1),
-("Michael", "Smith", 1, 1),
-("Michelle", "Co", 1, 1),
-("Tony", "Ally", 1, 1),
-("Kelly", "Birdie", 2, 2),
-("Larry", "Downfall", 2, 2),
+("Tam", "Nguyen", 1, 5),
+("Michael", "Smith", 1, 5),
+("Michelle", "Co", 1, 6),
+("Tony", "Ally", 1, 6),
+("Kelly", "Birdie", 2, 7),
+("Larry", "Downfall", 2, 7),
 ("Chris", "Long", 3, NULL),
--- slot department end
-
--- Blackjack department start
-("Xang", "Chang", 4, 3),
-("Allen", "Calvin", 4, 3),
-("Many", "Sexton", 4, 3),
-("Brandon", "Steven", 4, 3),
-("Jojo", "Birdie", 4, 3),
-("Larry", "Larock", 4, 3),
-("Steven", "Stone", 5, 4),
-("Kyle", "Bastin", 5, 4),
-("Louis", "Peacock", 5, 5),
-("Adam", "Reed", 5, 5),
+("Xang", "Chang", 4, 14),
+("Allen", "Calvin", 4, 14),
+("Many", "Sexton", 4, 15),
+("Brandon", "Steven", 4, 15),
+("Jojo", "Birdie", 4, 16),
+("Larry", "Larock", 4, 17),
+("Steven", "Stone", 5, 18),
+("Kyle", "Bastin", 5, 18),
+("Louis", "Peacock", 5, 19),
+("Adam", "Reed", 5, 19),
 ("Kong", "Xiong", 6, NULL),
 ("Jennifer", "Lynn", 6, NULL),
--- Blackjack department end
-
--- Hotel department start
-("Kristin", "Ton", 7, 6),
-("Stephen", "Callin", 7, 6),
-("Mary", "Popin", 7, 6),
-("Ian", "Madness", 8, 7),
-("George", "Lakorn", 8, 7),
+("Kristin", "Ton", 7, 23),
+("Stephen", "Callin", 7, 23),
+("Mary", "Popin", 7, 24),
+("Ian", "Madness", 8, 25),
+("Georgie", "Lakorn", 8, 25),
 ("Synn", "Mona", 9, NULL),
--- Hotel department end
-
--- Security department start
-("Tou", "Lee", 10, 8),
-("Stephanie", "Lincoln", 10, 8),
-("Steve", "Harden", 10, 9),
-("Van", "Den", 10, 9),
-("Hugo", "Merlin", 10, 9),
+("Tou", "Lee", 10, 31),
+("Stephanie", "Lincoln", 10, 31),
+("Steve", "Harden", 10, 32),
+("Van", "Den", 10, 32),
+("Hugo", "Merlin", 10, 32),
 ("George", "Kris", 11, NULL),
 ("Peace", "Loud", 11, NULL),
--- Security department end
-
--- Surveillance department start
-("Albert", "Fox", 12, 10),
-("Susie", "Coin", 12, 10),
-("Matthew", "Jony", 12, 10),
+("Albert", "Fox", 12, 36),
+("Susie", "Coin", 12, 36),
+("Matthew", "Jony", 12, 36),
 ("Shane", "Cutthroat", 13, NULL);
--- Surveillance department end
